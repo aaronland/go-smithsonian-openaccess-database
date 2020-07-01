@@ -1,0 +1,4 @@
+CREATE TABLE oembed (
+       url TEXT PRIMARY KEY,
+       body TEXT
+);
