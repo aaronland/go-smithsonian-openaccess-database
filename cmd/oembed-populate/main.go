@@ -10,8 +10,8 @@ import (
 	"context"
 	"encoding/json"
 	"flag"
-	"github.com/aaronland/go-smithsonian-openaccess-database/database"
-	"github.com/aaronland/go-smithsonian-openaccess/oembed"
+	"github.com/aaronland/go-smithsonian-openaccess-database/oembed"
+	oa_oembed "github.com/aaronland/go-smithsonian-openaccess/oembed"
 	"io"
 	"log"
 	"os"
@@ -24,14 +24,14 @@ func main() {
 
 	ctx := context.Background()
 
-	db, err := database.NewSQLOEmbedDatabase(ctx, *dsn)
+	db, err := oembed.NewSQLOEmbedDatabase(ctx, *dsn)
 
 	if err != nil {
 		log.Fatalf("Failed to create database, %v", err)
 	}
 
 	defer db.Close()
-	
+
 	reader := bufio.NewReader(os.Stdin)
 
 	for {
@@ -43,8 +43,8 @@ func main() {
 			// pass
 		}
 
-		body, err := reader.ReadBytes('\n')		
-		
+		body, err := reader.ReadBytes('\n')
+
 		if err == io.EOF {
 			break
 		}
@@ -54,8 +54,8 @@ func main() {
 		}
 
 		body = bytes.TrimSpace(body)
-		
-		var rec *oembed.OEmbedRecord
+
+		var rec *oa_oembed.OEmbedRecord
 
 		err = json.Unmarshal(body, &rec)
 

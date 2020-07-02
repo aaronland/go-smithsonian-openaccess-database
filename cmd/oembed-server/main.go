@@ -6,20 +6,20 @@ import (
 
 import (
 	"context"
-	"flag"
 	"encoding/json"
-	"log"
-	"github.com/aaronland/go-smithsonian-openaccess-database/database"
+	"flag"
 	"github.com/aaronland/go-http-server"
+	"github.com/aaronland/go-smithsonian-openaccess-database/oembed"
+	"log"
 	"net/http"
 )
 
-func RandomHandler(db database.OEmbedDatabase) (http.HandlerFunc, error) {
+func RandomHandler(db oembed.OEmbedDatabase) (http.HandlerFunc, error) {
 
-	fn := func(rsp http.ResponseWriter, req *http.Request) {	
+	fn := func(rsp http.ResponseWriter, req *http.Request) {
 
 		ctx := req.Context()
-		
+
 		record, err := db.GetRandomOEmbed(ctx)
 
 		if err != nil {
@@ -27,7 +27,7 @@ func RandomHandler(db database.OEmbedDatabase) (http.HandlerFunc, error) {
 		}
 
 		rsp.Header().Set("Content-type", "application/json")
-		
+
 		enc := json.NewEncoder(rsp)
 		enc.Encode(record)
 
@@ -36,18 +36,18 @@ func RandomHandler(db database.OEmbedDatabase) (http.HandlerFunc, error) {
 
 	h := http.HandlerFunc(fn)
 	return h, nil
-	
+
 }
 
 func main() {
 
-	server_uri := flag.String("server-uri", "http://localhost:8080", "...")	
-	dsn := flag.String("database-dsn", "sql://sqlite3/oembed.db", "...")	
+	server_uri := flag.String("server-uri", "http://localhost:8080", "...")
+	dsn := flag.String("database-dsn", "sql://sqlite3/oembed.db", "...")
 	flag.Parse()
 
 	ctx := context.Background()
 
-	db, err := database.NewSQLOEmbedDatabase(ctx, *dsn)
+	db, err := oembed.NewSQLOEmbedDatabase(ctx, *dsn)
 
 	if err != nil {
 		log.Fatalf("Failed to create database, %v", err)
@@ -64,7 +64,7 @@ func main() {
 	}
 
 	mux.Handle("/random/", random_handler)
-	
+
 	s, err := server.NewServer(ctx, *server_uri)
 
 	if err != nil {

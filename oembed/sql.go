@@ -1,11 +1,11 @@
-package database
+package oembed
 
 import (
 	"context"
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"github.com/aaronland/go-smithsonian-openaccess/oembed"
+	oa_oembed "github.com/aaronland/go-smithsonian-openaccess/oembed"
 	"net/url"
 )
 
@@ -47,7 +47,7 @@ func (db *SQLOEmbedDatabase) Close() error {
 	return db.conn.Close()
 }
 
-func (db *SQLOEmbedDatabase) AddOEmbed(ctx context.Context, rec *oembed.OEmbedRecord) error {
+func (db *SQLOEmbedDatabase) AddOEmbed(ctx context.Context, rec *oa_oembed.OEmbedRecord) error {
 
 	body, err := json.Marshal(rec)
 
@@ -75,7 +75,7 @@ func (db *SQLOEmbedDatabase) AddOEmbed(ctx context.Context, rec *oembed.OEmbedRe
 	return tx.Commit()
 }
 
-func (db *SQLOEmbedDatabase) GetRandomOEmbed(ctx context.Context) (*oembed.OEmbedRecord, error) {
+func (db *SQLOEmbedDatabase) GetRandomOEmbed(ctx context.Context) (*oa_oembed.OEmbedRecord, error) {
 
 	q := "SELECT body FROM oembed ORDER BY RANDOM() LIMIT 1"
 
@@ -89,7 +89,7 @@ func (db *SQLOEmbedDatabase) GetRandomOEmbed(ctx context.Context) (*oembed.OEmbe
 		return nil, err
 	}
 
-	var rec *oembed.OEmbedRecord
+	var rec *oa_oembed.OEmbedRecord
 
 	err = json.Unmarshal(body, &rec)
 
