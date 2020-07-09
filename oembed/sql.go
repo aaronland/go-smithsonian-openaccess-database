@@ -55,18 +55,18 @@ func (db *SQLOEmbedDatabase) AddOEmbed(ctx context.Context, rec *oa_oembed.OEmbe
 		return err
 	}
 
-	uri := rec.URL
+	url := rec.URL
 	object_uri := rec.ObjectURI
-	
+
 	tx, err := db.conn.BeginTx(ctx, nil)
 
 	if err != nil {
 		return err
 	}
 
-	q := "INSERT OR REPLACE INTO oembed (uri, object_uri, body) VALUES(?, ?)"
+	q := "INSERT OR REPLACE INTO oembed (url, object_uri, body) VALUES(?, ?, ?)"
 
-	_, err = tx.ExecContext(ctx, q, uri, object_uri, body)
+	_, err = tx.ExecContext(ctx, q, url, object_uri, body)
 
 	if err != nil {
 		tx.Rollback()
