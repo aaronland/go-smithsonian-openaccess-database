@@ -60,6 +60,7 @@ func main() {
 		err = json.Unmarshal(body, &rec)
 
 		if err != nil {
+			log.Println("BODY", string(body))
 			log.Fatalf("Failed to unmarshal OEmbed record, %v", err)
 		}
 
